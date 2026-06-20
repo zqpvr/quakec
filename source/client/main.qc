@@ -1095,6 +1095,7 @@ noref float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent
 	if (last_input_deviceid > 0)
 	{
 		last_input_was_gamepad = TRUE;
+		gamepad_enabled = TRUE;	// once a controller is used, enable gamepad features (aim assist). Never set anywhere upstream, so aim assist was dead.
 		setlocaluserinfo(0, "using_gamepad", "1");
 	}
 	else
