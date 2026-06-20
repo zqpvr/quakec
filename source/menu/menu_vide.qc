@@ -1,4 +1,4 @@
-string menu_video_buttons[12] = {"vm_resol", "vm_fulls", "vm_shfps", "vm_maxps", "vm_vsync", "vm_fov", "vm_gamma", "vm_uwide", "vm_parts", "vm_filtr", "vm_apply", "vm_back"};
+string menu_video_buttons[13] = {"vm_resol", "vm_fulls", "vm_shfps", "vm_maxps", "vm_vsync", "vm_fov", "vm_gamma", "vm_uwide", "vm_parts", "vm_filtr", "vm_rendr", "vm_apply", "vm_back"};
 
 float menu_video_init;
 float menu_video_modes;
@@ -10,6 +10,7 @@ float current_vsync;
 float current_ultrawide;
 float current_particles;
 float current_filter;
+float current_renderer;	// 0 = Vulkan, 1 = OpenGL
 
 #define MAX_VIDEO_MODES     128 // FIXME: arbitrary.
 
@@ -84,6 +85,7 @@ void() Menu_Video_StoreCurrentSettings =
     current_ultrawide = cvar("vid_ultrawide_limiter");
     current_particles = cvar("nzp_particles");
     current_filter = (substring(strtoupper(cvar_string("gl_texturemode")), 0, 10) == "GL_NEAREST");
+    current_renderer = (cvar_string("vid_renderer") == "gl" || cvar_string("vid_renderer") == "egl");
 }
 
 void() Menu_Video_Init =
@@ -142,6 +144,13 @@ void() Menu_Video_UpdateVsync =
     Menu_PlaySound(MENU_SND_ENTER);
     current_vsync = !current_vsync;
     cvar_set("vid_vsync", ftos(current_vsync));
+};
+
+void() Menu_Video_UpdateRenderer =
+{
+    Menu_PlaySound(MENU_SND_ENTER);
+    current_renderer = !current_renderer;
+    cvar_set("vid_renderer", current_renderer ? "gl" : "vk");
 };
 
 void() Menu_Video_UpdateFiltering =
@@ -286,6 +295,13 @@ void() Menu_Video =
     if (current_filter) filt_string = "NEAREST";
     else filt_string = "LINEAR";
     Menu_DrawOptionValue(10, filt_string);
+
+    // Renderer (Graphics API)
+    Menu_Button(11, "vm_rendr", "RENDERER", "Graphics API - applies on restart. Vulkan recommended; OpenGL is the legacy fallback.") ? Menu_Video_UpdateRenderer() : 0;
+    string rend_string = "";
+    if (current_renderer) rend_string = "OPENGL";
+    else rend_string = "VULKAN";
+    Menu_DrawOptionValue(11, rend_string);
 
     Menu_DrawDivider(12.25);
     Menu_Button(-2, "vm_apply", "APPLY", "Save & Apply Settings.") ? Menu_Video_ApplySettings() : 0;
