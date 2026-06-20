@@ -871,12 +871,12 @@ float(float evtype, float scanx, float chary, float devid) sui_input_event =
 			_sui_mouse1_down();
 			return TRUE;
 		}
-		else if (scanx == K_DOWNARROW || scanx == K_GP_DPAD_DOWN)
+		else if (scanx == K_DOWNARROW || scanx == K_GP_DPAD_DOWN || scanx == K_GP_LTHUMB_DOWN)
 		{
 			_sui_menukey_downarrow();
 			return TRUE;
 		}
-		else if (scanx == K_UPARROW || scanx == K_GP_DPAD_UP)
+		else if (scanx == K_UPARROW || scanx == K_GP_DPAD_UP || scanx == K_GP_LTHUMB_UP)
 		{
 			_sui_menukey_uparrow();
 			return TRUE;
@@ -886,12 +886,12 @@ float(float evtype, float scanx, float chary, float devid) sui_input_event =
 			_sui_menukey_enter();
 			return TRUE;
 		}
-		else if (scanx == K_LEFTARROW || scanx == K_GP_DPAD_LEFT)
+		else if (scanx == K_LEFTARROW || scanx == K_GP_DPAD_LEFT || scanx == K_GP_LTHUMB_LEFT)
 		{
 			_sui_menukey_leftarrow();
 			return TRUE;
 		}
-		else if (scanx == K_RIGHTARROW || scanx == K_GP_DPAD_RIGHT)
+		else if (scanx == K_RIGHTARROW || scanx == K_GP_DPAD_RIGHT || scanx == K_GP_LTHUMB_RIGHT)
 		{
 			_sui_menukey_rightarrow();
 			return TRUE;
