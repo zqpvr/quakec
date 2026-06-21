@@ -1061,6 +1061,24 @@ void(float scanx, float setval) Input_Movecheck =
     }
 }
 
+// Controller B = back one level for the in-game menus (pause + its submenus).
+// These run in CSQC (not menu.dat), and use #else back-targets (MENU_PAUSE),
+// so they need their own back logic separate from menu/main.qc's Menu_GoBack.
+void() CSQC_MenuBack =
+{
+	Menu_PlaySound(MENU_SND_ENTER);
+	if (current_menu == MENU_VIDEO || current_menu == MENU_AUDIO || current_menu == MENU_CONTROL || current_menu == MENU_ACCESSIBILITY)
+		current_menu = MENU_OPTIONS;
+	else if (current_menu == MENU_GAMEPAD || current_menu == MENU_BINDINGS)
+		current_menu = MENU_CONTROL;
+	else if (current_menu == MENU_OPTIONS)
+		current_menu = MENU_PAUSE;
+	else if (current_menu == MENU_PAUSE && menu_paus_submenu != 0)
+		menu_paus_submenu = 0;			// back out of a confirm dialog
+	else
+		ToggleMenu();					// resume the game
+};
+
 noref float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent =
 {
 	if (evtype == IE_GYROSCOPE || evtype == IE_ACCELEROMETER)
@@ -1106,6 +1124,11 @@ noref float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent
 
 	if (current_menu != MENU_NONE)
 	{
+		if (evtype == IE_KEYDOWN && scanx == K_GP_B && _sui_binding_command == "")
+		{
+			CSQC_MenuBack();
+			return TRUE;
+		}
 		return sui_input_event(evtype, scanx, chary, devid);
 	}
 
