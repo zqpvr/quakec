@@ -806,6 +806,18 @@ void(string id, vector pos, vector size, __inout vector scrollofs, float num_ser
 	int map_display_x = 0;
 	int player_display_x = 0;
 
+	//Keep the gamepad-selected row on screen: if the focused element is one of our rows, scroll to it.
+	string hovprefix = strcat(id, "scrl");
+	if (substring(_hover_actions[0], 0, strlen(hovprefix)) == hovprefix)
+	{
+		float sel = stof(substring(_hover_actions[0], strlen(hovprefix), -1));
+		float seltop = sel * rowsize.y;
+		if (seltop < scrollofs.y)
+			scrollofs.y = seltop;
+		else if (seltop + rowsize.y > scrollofs.y + size.y)
+			scrollofs.y = seltop + rowsize.y - size.y;
+	}
+
 	sui_list_view_begin(strcat(id, "scrl"), pos, size, rowsize, num_servers, scrollofs, [0, 16]);
 	for (float index = sui_list_item(listitem_pos); index > -1; index = sui_list_item(listitem_pos))
 	{

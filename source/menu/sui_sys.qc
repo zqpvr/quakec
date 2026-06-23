@@ -939,7 +939,7 @@ void(float width, float height) sui_begin =
 {
 	_action_elements_index = 0;
 	_sui_draw_initialized = TRUE;
-	
+
 	sui_reset_frame();
 	sui_push_frame([0, 0], [width, height]);
 }

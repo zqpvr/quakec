@@ -147,7 +147,7 @@ void() Menu_Coop_Browse =
 	if (!sui_is_hovered("cbm_refresh") && !sui_is_hovered("cbm_back"))
 	{
 		sui_set_align([SUI_ALIGN_CENTER, SUI_ALIGN_END]);
-		sui_text([0, -30], MENU_TEXT_MEDIUM, "NOTE: Keyboard or gamepad is not supported for server selection.", [1, 1, 1], 1, 0);
+		sui_text([0, -30], MENU_TEXT_MEDIUM, "Select a server and press confirm (or tap) to connect.", [1, 1, 1], 1, 0);
 	}
 
 	sui_pop_frame();
@@ -312,7 +312,23 @@ string(string prev_id) fn ## _GetNextButton =	\
 	return ret;									\
 };
 
-NEXTBUTTON_FUNC(Menu_Coop_Browse, menu_coop_browse_buttons)
+//Browse needs a custom traversal: step through each server row (cbm_serverlistscrl<i>) so the
+//controller can pick a server, then the Refresh/Back buttons. Reusing the row ids means the
+//existing hover-highlight and click-to-connect paths work for the gamepad for free.
+string(string prev_id) Menu_Coop_Browse_GetNextButton =
+{
+	float n = num_cached_servers;
+	if (prev_id == "")
+		return (n > 0) ? "cbm_serverlistscrl0" : "cbm_refresh";
+	if (substring(prev_id, 0, 18) == "cbm_serverlistscrl")
+	{
+		float idx = stof(substring(prev_id, 18, -1));
+		return (idx + 1 < n) ? strcat("cbm_serverlistscrl", ftos(idx + 1)) : "cbm_refresh";
+	}
+	if (prev_id == "cbm_refresh")
+		return "cbm_back";
+	return (n > 0) ? "cbm_serverlistscrl0" : "cbm_refresh";	//cbm_back (or unknown) -> wrap to top
+};
 NEXTBUTTON_FUNC(Menu_Coop_Direct, menu_coop_direct_buttons)
 NEXTBUTTON_FUNC(Menu_Coop_Join, menu_coop_join_buttons)
 NEXTBUTTON_FUNC(Menu_Coop_Create, menu_coop_create_buttons)
@@ -341,7 +357,22 @@ string(string next_id) fn ## _GetPreviousButton =	\
 	return ret;										\
 };
 
-PREVBUTTON_FUNC(Menu_Coop_Browse, menu_coop_browse_buttons)
+string(string next_id) Menu_Coop_Browse_GetPreviousButton =
+{
+	float n = num_cached_servers;
+	if (next_id == "")
+		return "cbm_back";
+	if (substring(next_id, 0, 18) == "cbm_serverlistscrl")
+	{
+		float idx = stof(substring(next_id, 18, -1));
+		return (idx - 1 >= 0) ? strcat("cbm_serverlistscrl", ftos(idx - 1)) : "cbm_back";	//above first server -> wrap to back
+	}
+	if (next_id == "cbm_back")
+		return "cbm_refresh";
+	if (next_id == "cbm_refresh")
+		return (n > 0) ? strcat("cbm_serverlistscrl", ftos(n - 1)) : "cbm_back";
+	return "cbm_back";
+};
 PREVBUTTON_FUNC(Menu_Coop_Direct, menu_coop_direct_buttons)
 PREVBUTTON_FUNC(Menu_Coop_Join, menu_coop_join_buttons)
 PREVBUTTON_FUNC(Menu_Coop_Create, menu_coop_create_buttons)
