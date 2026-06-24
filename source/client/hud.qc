@@ -1049,11 +1049,11 @@ void() HUD_Useprint =
     if (usebutton == "")
         usebutton = "UNBOUND";
 
-	// If this is a gamepad button, the space we want to reserve
-	// in the usestring should be a fixed width.
-	if (Key_IsControllerGlyph(usebutton)) {
+	// If this is a gamepad button (or we're on touch, where we draw an icon),
+	// the space we want to reserve in the usestring should be a fixed width.
+	if (Key_IsControllerGlyph(usebutton) || !last_input_was_gamepad) {
 		usespace = " ";
-	} 
+	}
 	// Scale the space in the usestring for the bind according to
 	// the bind's name.
 	else {
@@ -1086,7 +1086,9 @@ void() HUD_Useprint =
 		button_prefix = strreplace("%s", getstats(STAT_USEPRINTTOUCH), button_prefix);
 		button_width = x + getTextWidth(button_prefix, 12);
 
-		if (Key_IsControllerGlyph(usebutton))
+		if (!last_input_was_gamepad)	// touch: show the on-screen use button, not a key
+			drawpic([button_width - 4, g_height/2 + 59, 0], "gfx/touch/btn_activate", [20, 20], [1, 1, 0], 1);
+		else if (Key_IsControllerGlyph(usebutton))
 			Key_DrawControllerGlyph([button_width - 5, g_height/2 + 62], usebutton, [18, 18]);
 		else
 			Draw_String([button_width, g_height/2 + 65, 0], usebutton, [12, 12, 0], [1, 1, 0], 1, 0);

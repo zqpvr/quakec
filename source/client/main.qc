@@ -800,7 +800,9 @@ void(vector client_view_angles) Camera_AimSnap =
 {
     float zoom_value = getstatf(STAT_WEAPONZOOM);
 
-	if (!(gamepad_enabled && cvar("in_aimassist") == 1))
+	// controllers get aim assist only when they've enabled it; touch always gets it
+	// (mobile leans on it much harder, like CoD-mobile). controller path is unchanged.
+	if (last_input_was_gamepad && !(gamepad_enabled && cvar("in_aimassist") == 1))
 		return;
 
     if (zoom_value == 1 || zoom_value == 2) {
@@ -993,11 +995,14 @@ noref void(float width, float height, float menushown) CSQC_UpdateView =
 		sui_begin(g_width, g_height);
 		root_menu([g_width, g_height]);
 		sui_end();
+
+		Touch_DrawMenuBack();
 	}
 	else
 	{
 		setcursormode(FALSE);
 		HUD_DrawElements();
+		Touch_DrawControls();
 		Chat_Draw();
 		setlocaluserinfo(0, "in_menu", "0");
 	}
@@ -1083,6 +1088,14 @@ noref float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent
 {
 	if (evtype == IE_GYROSCOPE || evtype == IE_ACCELEROMETER)
 		return FALSE;
+
+	// on-screen touch controls (in-game only). when it claims the event we also
+	// flag the input as non-gamepad so the controller path stays out of the way.
+	if (Touch_InputEvent(evtype, scanx, chary, devid)) {
+		last_input_was_gamepad = FALSE;
+		setlocaluserinfo(0, "using_gamepad", "0");
+		return TRUE;
+	}
 
 	// Ignore subtle (drift-y) joystick axes
 	if (evtype == IE_JOYAXIS && devid > 0)
@@ -1216,6 +1229,8 @@ noref float(float evtype, float scanx, float chary, float devid) CSQC_InputEvent
 
 noref void() CSQC_Input_Frame =
 {
+	Touch_Frame();
+
 	input_angles += gun_kick;
 	input_angles += sniper_sway;
 	input_angles += cam_snap_difference;
