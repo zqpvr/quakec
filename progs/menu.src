@@ -15,6 +15,7 @@ menu_main.qc     // Main Menu
 menu_maps.qc     // Maps Menu
 menu_opts.qc     // Options Menu
 menu_vide.qc     // Video Menu
+menu_vadv.qc     // Advanced Video Menu
 menu_audi.qc     // Audio Menu
 menu_ctrl.qc     // Control Menu
 menu_gpad.qc     // Gamepad Menu

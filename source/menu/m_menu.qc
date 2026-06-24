@@ -1044,6 +1044,7 @@ void(vector size) root_menu =
 
 		case MENU_OPTIONS: Menu_Options(); break;
 		case MENU_VIDEO: Menu_Video(); break;
+		case MENU_VIDEOADV: Menu_Video_Adv(); break;
 		case MENU_AUDIO: Menu_Audio(); break;
 		case MENU_CONTROL: Menu_Control(); break;
 		case MENU_GAMEPAD: Menu_Gamepad(); break;

@@ -61,7 +61,8 @@ enum {
     MENU_CREDITS,
     MENU_PAUSE,
     MENU_LOBBY,
-    MENU_GAMESETTINGS
+    MENU_GAMESETTINGS,
+    MENU_VIDEOADV
 };
 
 #define MENU_SND_NAVIGATE 	0
@@ -99,6 +100,9 @@ void() Menu_Control;
 void() Menu_Gamepad;
 void() Menu_Bindings;
 void() Menu_Accessibility;
+void() Menu_Video_Adv;
+string(string prev_id) Menu_VideoAdv_GetNextButton;
+string(string next_id) Menu_VideoAdv_GetPreviousButton;
 
 #ifdef MENU
 

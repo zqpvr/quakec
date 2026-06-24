@@ -469,6 +469,9 @@ void() _sui_menukey_downarrow =
 		case MENU_VIDEO:
 			_hover_actions[0] = Menu_Video_GetNextButton(current_hovered_option);
 			break;
+		case MENU_VIDEOADV:
+			_hover_actions[0] = Menu_VideoAdv_GetNextButton(current_hovered_option);
+			break;
 		case MENU_AUDIO:
 			_hover_actions[0] = Menu_Audio_GetNextButton(current_hovered_option);
 			break;
@@ -546,6 +549,9 @@ void() _sui_menukey_uparrow =
 			break;
 		case MENU_VIDEO:
 			_hover_actions[0] = Menu_Video_GetPreviousButton(current_hovered_option);
+			break;
+		case MENU_VIDEOADV:
+			_hover_actions[0] = Menu_VideoAdv_GetPreviousButton(current_hovered_option);
 			break;
 		case MENU_AUDIO:
 			_hover_actions[0] = Menu_Audio_GetPreviousButton(current_hovered_option);
