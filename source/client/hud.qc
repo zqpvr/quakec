@@ -34,10 +34,14 @@ void(vector position, string bind, vector scale) Key_DrawControllerGlyph;
 
 float() GetUltraWideOffset =
 {
-	if (cvar("vid_ultrawide_limiter"))
+	// cl_safearea is the share of the screen's width, per side, that a phone's
+	// camera cutout and rounded corners take; the HUD stays inside it
+	float safe = cvar("cl_safearea") * g_width;
+
+	if (cvar("vid_ultrawide_limiter") && ULTRAWIDE_OFFSET > safe)
 		return ULTRAWIDE_OFFSET;
-	
-	return 0;
+
+	return safe;
 }
 
 //return hud images, makes drawpic slightly cleaner..
@@ -1194,11 +1198,8 @@ void() HUD_DrawPerksDefault =
 	
 	scale = 32;
 
-	x = 20;
+	x = 20 + GetUltraWideOffset();
 	y = 6;
-
-	if (cvar("vid_ultrawide_limiter"))
-		x += ULTRAWIDE_OFFSET;
 
 	// Double-Tap can have 2 icons depending on
 	// machine-specified version.
@@ -1224,11 +1225,8 @@ void() HUD_DrawPerksDefault =
 		y += scale;
 	}
 
-	x = 3;
+	x = 3 + GetUltraWideOffset();
 	y = 6;
-
-	if (cvar("vid_ultrawide_limiter"))
-		x += ULTRAWIDE_OFFSET;
 
 	// Now the first column.
 	for (float i = 0; i < 4; i++) {
@@ -2241,7 +2239,7 @@ void() HUD_StopWatch =
 	if (stopwatch_hr < 10) hr = strcat("0", ftos(stopwatch_hr)); else hr = ftos(stopwatch_hr);
 
 	stopwatch = strcat(hr, ":", min, ":", sec);
-	HUD_DrawStringWithBackdrop([g_width - (getTextWidth(stopwatch, 12)) - 2, 2], stopwatch, [12, 12], TEXT_ORANGE, 1, 0);
+	HUD_DrawStringWithBackdrop([g_width - GetUltraWideOffset() - (getTextWidth(stopwatch, 12)) - 2, 2], stopwatch, [12, 12], TEXT_ORANGE, 1, 0);
 }
 
 void() HUD_RoundStopWatch =
@@ -2260,7 +2258,7 @@ void() HUD_RoundStopWatch =
 	if (stopwatch_round_hr < 10) hr = strcat("0", ftos(stopwatch_round_hr)); else hr = ftos(stopwatch_round_hr);
 
 	stopwatch = strcat(hr, ":", min, ":", sec);
-	HUD_DrawStringWithBackdrop([g_width - (getTextWidth(stopwatch, 12)) - 2, 16], stopwatch, [12, 12], [1, 1, 1], 1, 0);
+	HUD_DrawStringWithBackdrop([g_width - GetUltraWideOffset() - (getTextWidth(stopwatch, 12)) - 2, 16], stopwatch, [12, 12], [1, 1, 1], 1, 0);
 }
 
 /*******************

@@ -570,6 +570,9 @@ void() Menu_DrawBuildDate =
 void() Menu_DrawBackground =
 {
 	sui_set_align([SUI_ALIGN_START, SUI_ALIGN_START]);
+	// the backdrop covers the whole screen, not just the safe area the menu sits in
+	sui_push_frame([-sui_safe_inset, 0], [sui_current_frame_size()[0] + 2 * sui_safe_inset, sui_current_frame_size()[1]]);
+	sui_set_align([SUI_ALIGN_START, SUI_ALIGN_START]);
 
 #ifdef MENU
 
@@ -611,6 +614,8 @@ void() Menu_DrawBackground =
 	// Bottom Bars
 	sui_fill([0, sui_current_frame_size()[1] - 55], [sui_current_frame_size()[0], 55], [0, 0, 0], 0.9, 0);
 	sui_fill([0, sui_current_frame_size()[1] - 58], [sui_current_frame_size()[0], 3], [0.2, 0.2, 0.2], 1, 0);
+
+	sui_pop_frame();
 };
 
 //

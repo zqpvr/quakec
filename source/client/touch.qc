@@ -65,25 +65,33 @@ float touch_sprint_stopping;	// cltime running stopped being wanted, 0 while it 
 vector touch_sprint_org;	// view origin when running was first wanted
 
 
+// x position for a share of the screen width, measured inside the safe area
+// (cl_safearea), so nothing lands under a camera cutout or a rounded corner
+float(float frac) Touch_X =
+{
+	float safe = cvar("cl_safearea") * g_width;
+	return safe + (g_width - 2 * safe) * frac;
+};
+
 // geometry of action button 'id' -> [centre_x, centre_y, size]
 vector(float id) Touch_BtnGeom =
 {
-	float w = g_width, h = g_height, b = h * 0.13;
+	float h = g_height, b = h * 0.13;
 	// combat buttons cluster on the right; movement-ish ones sit by the left thumb,
 	// and the centre stays open for look-drag
 	switch (id) {
-		case TB_ADSFIRE:  return [w * 0.87, h * 0.83, b * 1.35];	// main shoot button
-		case TB_RELOAD:   return [w * 0.75, h * 0.87, b * 0.95];
-		case TB_KNIFE:    return [w * 0.92, h * 0.58, b * 0.90];
-		case TB_USE:      return [w * 0.79, h * 0.58, b * 0.90];
-		case TB_GRENADE:  return [w * 0.92, h * 0.38, b * 0.90];
-		case TB_JUMP:     return [w * 0.79, h * 0.38, b * 0.90];
-		case TB_SWAP:     return [w * 0.92, h * 0.19, b * 0.85];
-		case TB_BETTY:    return [w * 0.79, h * 0.19, b * 0.85];
-		case TB_NADESWAP: return [w * 0.67, h * 0.19, b * 0.75];
+		case TB_ADSFIRE:  return [Touch_X(0.87), h * 0.83, b * 1.35];	// main shoot button
+		case TB_RELOAD:   return [Touch_X(0.75), h * 0.87, b * 0.95];
+		case TB_KNIFE:    return [Touch_X(0.92), h * 0.58, b * 0.90];
+		case TB_USE:      return [Touch_X(0.79), h * 0.58, b * 0.90];
+		case TB_GRENADE:  return [Touch_X(0.92), h * 0.38, b * 0.90];
+		case TB_JUMP:     return [Touch_X(0.79), h * 0.38, b * 0.90];
+		case TB_SWAP:     return [Touch_X(0.92), h * 0.19, b * 0.85];
+		case TB_BETTY:    return [Touch_X(0.79), h * 0.19, b * 0.85];
+		case TB_NADESWAP: return [Touch_X(0.67), h * 0.19, b * 0.75];
 		// left thumb reaches these without leaving the stick
-		case TB_CROUCH:   return [w * 0.29, h * 0.85, b * 0.90];
-		case TB_PAUSE:    return [w * 0.035, h * 0.11, b * 0.62];
+		case TB_CROUCH:   return [Touch_X(0.29), h * 0.85, b * 0.90];
+		case TB_PAUSE:    return [Touch_X(0.035), h * 0.11, b * 0.62];
 	}
 	return '0 0 0';
 };
@@ -282,7 +290,7 @@ float touch_menu_down[TOUCH_MAXFINGERS];	// we issued a mouse1-down for this fin
 vector() Touch_MenuBackGeom =
 {
 	float b = g_height * 0.13;
-	return [g_width * 0.05, g_height * 0.12, b * 0.85];
+	return [Touch_X(0.05), g_height * 0.12, b * 0.85];
 };
 
 float(float evtype, float scanx, float chary, float devid) Touch_MenuEvent =
@@ -579,7 +587,7 @@ void() Touch_DrawStick =
 	// The base follows the anchor, so it appears under the thumb rather than
 	// sitting somewhere the thumb has to find. With nothing held it rests at the
 	// usual spot as a hint of where the stick lives.
-	float scx = g_width * 0.15, scy = g_height * 0.74;
+	float scx = Touch_X(0.15), scy = g_height * 0.74;
 	float base = g_height * 0.34, knob = g_height * 0.15;
 	float kx = scx, ky = scy, ba = 0.16, ka = 0.22;
 	if (finger >= 0) {

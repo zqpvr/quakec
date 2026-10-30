@@ -941,6 +941,8 @@ float(float evtype, float scanx, float chary, float devid) sui_input_event =
 // void() sui_pre_draw 
 // Resets state for sui actions so that no trouble happens. 
 // Call it before your menu code per frame in your draw/updateview.
+float sui_safe_inset;
+
 void(float width, float height) sui_begin =
 {
 	_action_elements_index = 0;
@@ -948,6 +950,11 @@ void(float width, float height) sui_begin =
 
 	sui_reset_frame();
 	sui_push_frame([0, 0], [width, height]);
+
+	// Menus lay out inside the safe area (cl_safearea), clear of a phone's camera
+	// cutout and rounded corners; backgrounds step back out to the full screen.
+	sui_safe_inset = cvar("cl_safearea") * width;
+	sui_push_frame([sui_safe_inset, 0], [width - 2 * sui_safe_inset, height]);
 }
 
 // void() sui_end
