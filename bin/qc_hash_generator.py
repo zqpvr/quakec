@@ -133,13 +133,13 @@ def read_csv_data():
     in ascending order.
     '''
     global original_lengths, original_names
-    csv_data = pandas.read_csv(args['input_file'])
+    csv_data = pandas.read_csv(args['input_file']).astype(object)
 
     # Grab every value and turn the first entry into a hash.
-    for value in csv_data.values:
+    for i, value in enumerate(csv_data.values):
         original_lengths.append(len(value[0]))
         original_names.append(value[0])
-        value[0] = int(crc16.ibm_3740(str.encode(value[0])))
+        csv_data.iloc[i, 0] = int(crc16.ibm_3740(str.encode(value[0])))
 
     # Now order everything by ascending order
     csv_data = csv_data.sort_values(csv_data.columns[0])
