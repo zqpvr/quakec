@@ -1,4 +1,27 @@
-# Nazi Zombies: Portable QuakeC
+# Nazi Zombies: Portable QuakeC for Android
+
+The game code behind the Android port, and the changes it needs on a phone.
+
+Upstream is [nzp-team/quakec](https://github.com/nzp-team/quakec), NZ:P's QuakeC. This branch follows
+upstream's last version that the FTE engine can still run; upstream has since moved on to its own Vril engine.
+
+Used by [nzportable-android](https://git.zqpvr.net/zqpvr01/nzportable-android), which builds this code into the APK.
+
+## What this fork changes
+
+| Area | Change |
+| --- | --- |
+| Client | Aim assist turns on once a controller is used |
+| Menu | A Vulkan and OpenGL renderer toggle, and an advanced video menu |
+| Menu | Menus navigate with the left stick, and B goes back |
+| Menu | Controller support for the Co-op server browser |
+| Global | On-screen touch controls |
+| Menu | A high-end realtime lighting mode |
+| Global | The interface keeps clear of the camera cutout and rounded corners |
+| Tools | The hash table generator works with pandas 3 |
+| Repo | Upstream's workflows are gone; nzportable-android's CI builds this code |
+
+Everything below is upstream's README, unchanged.
 
 ## About
 This is the QuakeC portion of the NZ:P source code. QuakeC is responsible for most game-related code such as weapon logic, ai, and Perks. You can read more about QuakeC on the [Wikipedia page](https://en.wikipedia.org/wiki/QuakeC). NZ:P makes use of CSQC for PC/FTE.
